@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Crop Disease Detector</title>
+    <link rel="stylesheet" href="/frontend/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                🌾 AI Crop Disease Detector
+            </div>
+            <div class="nav-links">
+                <a href="#upload" class="nav-link">Upload Image</a>
+                <a href="#how-to-use" class="nav-link">Guide</a>
+                <a href="#about" class="nav-link">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>AI Crop Disease Detector</h1>
+            <p>Your intelligent farming companion - Detect crop diseases in seconds!</p>
+            <p class="subtitle">Upload a photo of your crop leaf and get instant diagnosis with treatment recommendations</p>
+        </div>
+        <div class="hero-image">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='80' fill='%2366BB6A'/%3E%3Cpath d='M100 40 Q120 60 115 85 Q110 100 100 110 Q90 100 85 85 Q80 60 100 40' fill='%2327AE60'/%3E%3Ccircle cx='70' cy='110' r='8' fill='%23E74C3C'/%3E%3Ccircle cx='130' cy='95' r='6' fill='%23F39C12'/%3E%3C/svg%3E" alt="Leaf Illustration">
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Upload Section -->
+        <section class="upload-section" id="upload">
+            <div class="section-title">
+                <h2>📸 Analyze Your Crop</h2>
+                <p>Take a clear photo of the affected leaf and upload it here</p>
+            </div>
+
+            <div class="upload-area" id="uploadArea">
+                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <h3>Drag and drop image here</h3>
+                <p>or</p>
+                <input type="file" id="fileInput" accept="image/*" hidden>
+                <button class="btn btn-primary" id="browseBtn">Browse Files</button>
+                <p class="upload-info">Supported: JPG, PNG, GIF (Max 10 MB)</p>
+            </div>
+
+            <!-- Image Preview -->
+            <div id="previewContainer" class="preview-container" style="display: none;">
+                <div class="preview-wrapper">
+                    <img id="previewImage" src="" alt="Preview">
+                    <button class="btn-remove" id="removeBtn" title="Remove image">×</button>
+                </div>
+            </div>
+
+            <!-- Analyze Button -->
+            <button class="btn btn-analyze" id="analyzeBtn" style="display: none;">
+                <span class="spinner" id="spinner" style="display: none;"></span>
+                🔍 Analyze Image
+            </button>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <div class="section-title">
+                <h2>📊 Diagnosis Results</h2>
+            </div>
+
+            <!-- Disease Card -->
+            <div class="result-card">
+                <div class="disease-header">
+                    <h3 id="diseaseName"></h3>
+                    <span id="severity" class="severity-badge"></span>
+                </div>
+                
+                <div class="confidence-indicator">
+                    <p>Confidence Level</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="confidenceFill"></div>
+                    </div>
+                    <p class="confidence-value" id="confidenceValue"></p>
+                </div>
+
+                <div class="disease-description">
+                    <h4>About This Disease:</h4>
+                    <p id="description"></p>
+                </div>
+
+                <!-- Treatment Section -->
+                <div class="treatment-section">
+                    <div class="treatment-column">
+                        <div class="treatment-box treatment-immediate">
+                            <h4>🩺 Treatment</h4>
+                            <ul id="treatmentList"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Prevention Section -->
+                    <div class="treatment-column">
+                        <div class="treatment-box treatment-prevention">
+                            <h4>🛡️ Prevention</h4>
+                            <ul id="preventionList"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" id="newAnalysisBtn">🔄 Analyze Another Image</button>
+                    <button class="btn btn-secondary" id="downloadBtn">📥 Download Report</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- How to Use Section -->
+        <section class="guide-section" id="how-to-use">
+            <div class="section-title">
+                <h2>📋 How to Use</h2>
+            </div>
+            
+            <div class="guide-steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h4>Capture Photo</h4>
+                    <p>Take a clear, well-lit photo of the affected crop leaf. Ensure natural lighting for best results.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h4>Upload Image</h4>
+                    <p>Upload the image using the upload area. Drag and drop or click to browse from your device.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h4>AI Analysis</h4>
+                    <p>Our AI model analyzes the leaf image and identifies the disease in seconds.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h4>Get Treatment</h4>
+                    <p>Receive detailed treatment recommendations and prevention tips tailored to your crop disease.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tips Section -->
+        <section class="tips-section">
+            <div class="section-title">
+                <h2>💡 Tips for Best Results</h2>
+            </div>
+            
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <span class="tip-icon">📷</span>
+                    <h4>Clear Image</h4>
+                    <p>Use a smartphone camera with good resolution. Avoid blurry images.</p>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-icon">☀️</span>
+                    <h4>Good Lighting</h4>
+                    <p>Take photos in natural daylight. Avoid shadows and backlighting.</p>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-icon">🎯</span>
+                    <h4>Focus on Affected Area</h4>
+                    <p>Zoom in on the diseased portion of the leaf for accurate detection.</p>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-icon">📐</span>
+                    <h4>Proper Framing</h4>
+                    <p>Include the entire affected leaf or section showing the disease.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section" id="about">
+            <div class="section-title">
+                <h2>ℹ️ About This Project</h2>
+            </div>
+            
+            <div class="about-content">
+                <h4>Technology Used:</h4>
+                <ul class="tech-list">
+                    <li><strong>Machine Learning:</strong> TensorFlow & Keras (MobileNetV2)</li>
+                    <li><strong>Backend:</strong> Python Flask REST API</li>
+                    <li><strong>Frontend:</strong> HTML5, CSS3, Vanilla JavaScript</li>
+                    <li><strong>Dataset:</strong> PlantVillage Dataset (38+ disease classes)</li>
+                </ul>
+
+                <h4>Model Details:</h4>
+                <ul class="tech-list">
+                    <li>Transfer Learning with MobileNetV2 (ImageNet pretrained)</li>
+                    <li>Image Size: 224x224 pixels</li>
+                    <li>Supports 38 plant disease classes</li>
+                    <li>Accuracy: 92-95% depending on image quality</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- Error/Alert Messages -->
+    <div class="alert" id="alertBox" style="display: none;">
+        <button class="alert-close" onclick="closeAlert()">×</button>
+        <p id="alertMessage"></p>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="spinner-large">
+            <div class="spinner-ring"></div>
+            <p>Analyzing your image...</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 AI Crop Disease Detector | Helping Farmers Fight Crop Diseases</p>
+            <p>Built with ❤️ for sustainable agriculture</p>
+        </div>
+    </footer>
+
+    <script src="/frontend/script.js"></script>
+</body>
+</html>
