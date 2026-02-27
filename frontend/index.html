@@ -68,6 +68,55 @@
                 <span class="spinner" id="spinner" style="display: none;"></span>
                 🔍 Analyze Image
             </button>
+
+            <!-- Voice Control Button -->
+            <button class="btn btn-voice" id="voiceBtn" title="Click to speak: 'Check my crop disease'">
+                🎤 Voice Control
+            </button>
+            <p class="voice-instruction" id="voiceInstruction" style="display: none;">
+                Listening... Say "check my crop disease" or "analyze crop"
+            </p>
+        </section>
+
+        <!-- Weather Risk Section -->
+        <section class="weather-section" id="weatherSection">
+            <div class="section-title">
+                <h2>🌦️ Weather Risk Assessment</h2>
+                <p>Check your location's weather impact on crop disease risk</p>
+            </div>
+
+            <div class="weather-container">
+                <button class="btn btn-primary" id="getWeatherBtn">📍 Get My Weather</button>
+                <p class="location-help" id="locationHelp">We'll use your device location to check weather conditions</p>
+            </div>
+
+            <!-- Weather Card -->
+            <div class="weather-card" id="weatherCard" style="display: none;">
+                <div class="weather-grid">
+                    <div class="weather-item">
+                        <span class="weather-label">🌡️ Temperature</span>
+                        <span class="weather-value" id="weatherTemp"></span>
+                    </div>
+                    <div class="weather-item">
+                        <span class="weather-label">💧 Humidity</span>
+                        <span class="weather-value" id="weatherHumidity"></span>
+                    </div>
+                    <div class="weather-item">
+                        <span class="weather-label">☁️ Weather</span>
+                        <span class="weather-value" id="weatherCondition">-</span>
+                    </div>
+                </div>
+
+                <div class="risk-assessment">
+                    <div class="risk-badge" id="riskBadge"></div>
+                    <p class="risk-message" id="riskMessage"></p>
+                </div>
+
+                <div class="recommendations-box">
+                    <h4>📋 Farmer Recommendations:</h4>
+                    <ul class="recommendations-list" id="recommendationsList"></ul>
+                </div>
+            </div>
         </section>
 
         <!-- Results Section -->

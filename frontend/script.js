@@ -88,6 +88,16 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
     downloadReport();
 });
 
+// Weather button
+document.getElementById('getWeatherBtn').addEventListener('click', () => {
+    getWeatherData();
+});
+
+// Voice control button
+document.getElementById('voiceBtn').addEventListener('click', () => {
+    startVoiceRecognition();
+});
+
 // =====================================================
 // File Handling
 // =====================================================
@@ -354,6 +364,161 @@ async function checkBackendConnection() {
 }
 
 // =====================================================
+// Weather Risk Prediction
+// =====================================================
+
+function getWeatherData() {
+    const getWeatherBtn = document.getElementById('getWeatherBtn');
+    getWeatherBtn.disabled = true;
+    getWeatherBtn.textContent = '📍 Getting location...';
+
+    // Get user's geolocation
+    if (!navigator.geolocation) {
+        showAlert('Geolocation is not supported by your browser', 'error');
+        getWeatherBtn.disabled = false;
+        getWeatherBtn.textContent = '📍 Get My Weather';
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            fetchWeatherData(lat, lon);
+            getWeatherBtn.textContent = '📍 Get My Weather';
+            getWeatherBtn.disabled = false;
+        },
+        (error) => {
+            showAlert('Could not get your location. Please enable location services.', 'error');
+            getWeatherBtn.disabled = false;
+            getWeatherBtn.textContent = '📍 Get My Weather';
+        }
+    );
+}
+
+async function fetchWeatherData(lat, lon) {
+    try {
+        const response = await fetch(`${API_URL}/weather?lat=${lat}&lon=${lon}`);
+        const data = await response.json();
+
+        if (!data.success) {
+            showAlert('Could not fetch weather data', 'error');
+            return;
+        }
+
+        displayWeatherData(data);
+    } catch (error) {
+        console.error('Weather fetch error:', error);
+        showAlert('Error fetching weather data. Check your connection.', 'error');
+    }
+}
+
+function displayWeatherData(data) {
+    const weatherCard = document.getElementById('weatherCard');
+    
+    // Update weather values
+    document.getElementById('weatherTemp').textContent = `${data.temperature}°C`;
+    document.getElementById('weatherHumidity').textContent = `${data.humidity}%`;
+    document.getElementById('weatherCondition').textContent = data.weather || 'Unknown';
+
+    // Update risk badge
+    const riskBadge = document.getElementById('riskBadge');
+    riskBadge.textContent = data.risk_level.toUpperCase();
+    riskBadge.className = `risk-badge risk-${data.risk_level}`;
+
+    // Update risk message
+    document.getElementById('riskMessage').textContent = data.risk_message;
+
+    // Update recommendations
+    const recommendationsList = document.getElementById('recommendationsList');
+    recommendationsList.innerHTML = data.recommendations
+        .map(rec => `<li>${rec}</li>`)
+        .join('');
+
+    // Show weather card
+    weatherCard.style.display = 'block';
+    weatherCard.scrollIntoView({ behavior: 'smooth' });
+}
+
+// =====================================================
+// Voice Recognition (Web Speech API)
+// =====================================================
+
+let recognition = null;
+let isListening = false;
+
+function initializeVoiceRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+        console.warn('Speech Recognition not supported in this browser');
+        document.getElementById('voiceBtn').style.display = 'none';
+        return;
+    }
+
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.language = 'en-US';
+
+    recognition.onstart = () => {
+        isListening = true;
+        const voiceBtn = document.getElementById('voiceBtn');
+        voiceBtn.classList.add('listening');
+        document.getElementById('voiceInstruction').style.display = 'block';
+    };
+
+    recognition.onend = () => {
+        isListening = false;
+        const voiceBtn = document.getElementById('voiceBtn');
+        voiceBtn.classList.remove('listening');
+        document.getElementById('voiceInstruction').style.display = 'none';
+    };
+
+    recognition.onresult = (event) => {
+        let transcript = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+        }
+
+        transcript = transcript.toLowerCase().trim();
+        console.log('Voice command:', transcript);
+
+        // Check for command keywords
+        const keywords = ['check', 'analyze', 'disease', 'crop', 'scan', 'detect'];
+        const hasKeyword = keywords.some(keyword => transcript.includes(keyword));
+
+        if (hasKeyword) {
+            processeVoiceCommand(transcript);
+        }
+    };
+
+    recognition.onerror = (event) => {
+        console.error('Voice recognition error:', event.error);
+        showAlert(`Voice recognition error: ${event.error}`, 'error');
+    };
+}
+
+function startVoiceRecognition() {
+    if (!recognition) {
+        initializeVoiceRecognition();
+    }
+
+    if (isListening) {
+        recognition.stop();
+    } else {
+        recognition.start();
+    }
+}
+
+function processeVoiceCommand(transcript) {
+    showAlert(`🎤 Heard: "${transcript}" - Please upload an image to analyze`, 'success');
+    document.getElementById('fileInput').click();
+    recognition.stop();
+}
+
+// =====================================================
 // Image Optimization Tips
 // =====================================================
 
@@ -378,6 +543,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Check backend connection
     setTimeout(checkBackendConnection, 1000);
+
+    // Initialize voice recognition
+    initializeVoiceRecognition();
 
     // Show tips in console
     showImageTips();

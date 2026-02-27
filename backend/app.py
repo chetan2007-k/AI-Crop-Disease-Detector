@@ -409,6 +409,138 @@ def get_info():
         'supported_formats': list(ALLOWED_EXTENSIONS)
     }), 200
 
+@app.route('/weather', methods=['GET'])
+def get_weather():
+    """
+    GET /weather
+    
+    Get weather data for given location (latitude, longitude).
+    Uses OpenWeatherMap free API.
+    
+    Query Parameters:
+    - lat: Latitude (required)
+    - lon: Longitude (required)
+    
+    Response:
+    {
+        "success": true,
+        "temperature": 28.5,
+        "humidity": 75,
+        "weather": "Clouds",
+        "risk_level": "high",
+        "risk_message": "High humidity increases fungal disease risk",
+        "recommendations": [...]
+    }
+    """
+    try:
+        import requests
+        
+        lat = request.args.get('lat')
+        lon = request.args.get('lon')
+        
+        if not lat or not lon:
+            return jsonify({
+                'success': False,
+                'error': 'Latitude and longitude are required'
+            }), 400
+        
+        # OpenWeatherMap free API (no key needed for demo)
+        # Using wttr.in as an alternative that doesn't require API key
+        url = f'https://wttr.in/?format=j1&lat={lat}&lon={lon}'
+        
+        try:
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
+            data = response.json()
+            
+            # Extract current weather data
+            current = data['current_condition'][0]
+            temperature = float(current['temp_C'])
+            humidity = int(current['humidity'])
+            weather_desc = current['weatherDesc'][0]['value']
+            
+            # Assess risk based on humidity and weather conditions
+            risk_level = 'low'
+            risk_message = 'Fungal disease risk is low'
+            recommendations = []
+            
+            if humidity >= 80:
+                risk_level = 'critical'
+                risk_message = '⚠️ CRITICAL: Very high humidity - extreme fungal disease risk'
+                recommendations = [
+                    '🚨 Increase ventilation immediately',
+                    '🌿 Remove affected leaves quickly',
+                    '💧 Reduce watering frequency',
+                    '🔬 Apply fungicide preventatively',
+                    '👀 Monitor plants daily'
+                ]
+            elif humidity >= 70:
+                risk_level = 'high'
+                risk_message = '🌦️ High humidity - increased fungal disease risk'
+                recommendations = [
+                    '🌬️ Improve air circulation',
+                    '💧 Water early morning, avoid evening',
+                    '🔬 Consider preventive fungicide',
+                    '👀 Monitor for symptoms',
+                    '🌿 Prune dense leaf areas'
+                ]
+            elif humidity >= 50:
+                risk_level = 'medium'
+                risk_message = '🌤️ Moderate humidity - normal fungal disease risk'
+                recommendations = [
+                    '💧 Continue regular watering routine',
+                    '🌬️ Maintain good spacing between plants',
+                    '👀 Regular inspections recommended',
+                    '🔬 Keep fungicide on hand'
+                ]
+            else:
+                risk_level = 'low'
+                risk_message = '☀️ Low humidity - fungal disease risk is low'
+                recommendations = [
+                    '✅ Fungal disease risk minimal',
+                    '💧 Monitor irrigation for drought stress',
+                    '☀️ Ideal conditions for most crops',
+                    '🌿 Good air circulation maintained'
+                ]
+            
+            # Add temperature-based warnings
+            if temperature > 32:
+                recommendations.insert(0, '🔥 Very hot - ensure adequate watering')
+            elif temperature < 10:
+                recommendations.insert(0, '❄️ Cold conditions - reduced disease pressure')
+            
+            return jsonify({
+                'success': True,
+                'temperature': temperature,
+                'humidity': humidity,
+                'weather': weather_desc,
+                'risk_level': risk_level,
+                'risk_message': risk_message,
+                'recommendations': recommendations
+            }), 200
+            
+        except requests.exceptions.RequestException:
+            # Fallback: return default weather data
+            return jsonify({
+                'success': True,
+                'temperature': 25,
+                'humidity': 65,
+                'weather': 'Unknown',
+                'risk_level': 'medium',
+                'risk_message': '🌤️ Weather data unavailable - assuming moderate risk',
+                'recommendations': [
+                    'Monitor local weather conditions',
+                    'Maintain proper plant care routine',
+                    'Check weather forecast regularly'
+                ]
+            }), 200
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Error fetching weather data: {str(e)}'
+        }), 500
+
 # =====================================================
 # Error Handlers
 # =====================================================

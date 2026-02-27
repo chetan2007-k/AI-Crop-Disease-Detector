@@ -934,6 +934,223 @@ body {
 }
 
 /* =====================================================
+   Weather Widget Styles
+   ===================================================== */
+
+.weather-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    margin: var(--spacing-xl) 0;
+}
+
+.weather-section .section-title h2,
+.weather-section .section-title p {
+    color: white;
+}
+
+.weather-container {
+    text-align: center;
+    margin: var(--spacing-lg) 0;
+}
+
+.weather-container .btn-primary {
+    background: linear-gradient(135deg, #fff, #f0f0f0);
+    color: #333;
+    font-weight: bold;
+}
+
+.weather-container .btn-primary:hover {
+    background: linear-gradient(135deg, #f0f0f0, #fff);
+    transform: translateY(-2px);
+}
+
+.location-help {
+    margin-top: var(--spacing-md);
+    font-size: var(--font-sm);
+    opacity: 0.9;
+}
+
+.weather-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+}
+
+.weather-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.weather-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.weather-label {
+    font-size: var(--font-sm);
+    opacity: 0.9;
+}
+
+.weather-value {
+    font-size: var(--font-2xl);
+    font-weight: bold;
+}
+
+.risk-assessment {
+    margin: var(--spacing-lg) 0;
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+
+.risk-badge {
+    display: inline-block;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    font-size: var(--font-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.risk-low {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.risk-medium {
+    background-color: #f39c12;
+    color: white;
+}
+
+.risk-high {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.risk-critical {
+    background-color: #c0392b;
+    color: white;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.risk-message {
+    font-size: var(--font-lg);
+    font-weight: bold;
+    margin: var(--spacing-md) 0;
+}
+
+.recommendations-box {
+    margin-top: var(--spacing-lg);
+    text-align: left;
+}
+
+.recommendations-box h4 {
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-lg);
+}
+
+.recommendations-list {
+    list-style: none;
+    padding: 0;
+}
+
+.recommendations-list li {
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.1);
+    border-left: 3px solid currentColor;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.recommendations-list li:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(4px);
+}
+
+/* =====================================================
+   Voice Control Styles
+   ===================================================== */
+
+.btn-voice {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-top: var(--spacing-md);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-size: var(--font-base);
+    font-weight: bold;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+}
+
+.btn-voice:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-voice.listening {
+    animation: voicePulse 1s infinite;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+@keyframes voicePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+    50% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+}
+
+.voice-instruction {
+    text-align: center;
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: var(--font-sm);
+    margin-top: var(--spacing-md);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .weather-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .weather-card {
+        padding: var(--spacing-lg);
+    }
+
+    .btn-voice {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: var(--font-sm);
+    }
+}
+
+/* =====================================================
    Print Styles
    ===================================================== */
 
